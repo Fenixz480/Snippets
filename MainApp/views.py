@@ -19,19 +19,12 @@ def add_snippet_page(request):
         }
         return render(request, 'pages/add_snippet.html', context)
     elif request.method == "POST":
-        # form_data = request.POST
-        # snippet = Snippet(
-        #     name=form_data["name"],
-        #     lang=form_data["lang"],
-        #     code=form_data["code"],
-        # )
-        # snippet.save()
-        # return redirect('snippets-list')
         form = SnippetForm(request.POST)
         if form.is_valid():
-            form.save()
+            snippet = form.save(commit=False)
+            snippet.user = request.user
+            snippet.save()
             return redirect("snippets-list")
-
 
 
 def snippets_page(request):
@@ -68,10 +61,3 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect(request.META.get('HTTP_REFERER', '/'))
-
-
-
-
-
-
-
