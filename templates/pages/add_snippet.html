@@ -46,6 +46,7 @@
 
         <div class="row">
             <div class="col">
+               {% comment %}
                 <form action="{% url 'snippet-create' %}" method="post">{% csrf_token %}
                     <div class="form-group row">
                         <div class="col-8">
@@ -72,18 +73,20 @@
                         </div>
                     </div>
                 </form>
+                {% endcomment %}
+                <form action="" method="post">{% csrf_token %}
+                <table>
+                    {{ form }}
+                </table>
+                    <button type="submit">Сохранить</button>
+                </form>
 
             </div>
         </div>
     </div>
 </main>
 
-<footer class="footer mt-auto py-3">
-    <div class="container">
-    <span class="text-muted">&copy; Юрченко Евгений, {% now "Y" %}. <br>
-        Шаблон заготовка для урока</span>
-    </div>
-</footer>
+{% include 'inc/inc-footer.html' %}
 
 <!-- Optional JavaScript -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"
