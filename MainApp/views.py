@@ -18,9 +18,7 @@ def snippets_page(request):
     context = {
         'pagename': 'Просмотр сниппетов',
         'snippets': snippets,
-
     }
-
     return render(request, 'pages/view_snippets.html', context)
 
 
@@ -31,3 +29,16 @@ def snippet_detail(request, snippet_id):
         'snippet': snippet
     }
     return render(request, 'snippet_detail.html', context)
+
+
+def snippet_create(request):
+    if request.method == "POST":
+        form_data = request.POST
+        snippet = Snippet(
+            name=form_data["name"],
+            lang=form_data["lang"],
+            code=form_data["code"],
+        )
+        snippet.save()
+        return redirect('snippets-list')
+
