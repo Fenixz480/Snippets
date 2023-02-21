@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
-from MainApp.models import Snippet
-from MainApp.forms import SnippetForm, UserRegistrationForm
+from MainApp.models import Snippet, Comment
+from MainApp.forms import SnippetForm, UserRegistrationForm, CommentForm
 from django.contrib import auth
 
 
@@ -28,7 +28,7 @@ def add_snippet_page(request):
 
 
 def snippets_page(request):
-    snippets = Snippet.objects.all()
+    snippets = Snippet.objects.filter(access="public")
     context = {
         'pagename': 'Просмотр сниппетов',
         'snippets': snippets,
@@ -38,9 +38,11 @@ def snippets_page(request):
 
 def snippet_detail(request, snippet_id):
     snippet = Snippet.objects.get(pk=snippet_id)
+    comment_form = CommentForm()
     context = {
         'pagename': 'Информация о сниппете',
-        'snippet': snippet
+        'snippet': snippet,
+        'comment_form': comment_form,
     }
     return render(request, 'snippet_detail.html', context)
 
@@ -53,14 +55,16 @@ def login(request):
         if user is not None:
             auth.login(request, user)
         else:
-            # Return error message
-            pass
+            context = {
+                'errors': 'Логин или пароль некорректны',
+            }
+            return render(request, 'pages/index.html', context)
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 def logout(request):
     auth.logout(request)
-    return redirect(request.META.get('HTTP_REFERER', '/'))
+    return redirect('home')
 
 
 def registration(request):
@@ -76,5 +80,44 @@ def registration(request):
             form.save()
             return redirect('home')
         else:
-            pass
+            context = {
+                'form': form,
+            }
+            return render(request, 'pages/registration.html', context)
 
+
+def snippets_my(request):
+    my_snippet = Snippet.objects.filter(user=request.user)
+    context = {
+        'pagename': 'Мои сниппеты',
+        'snippets': my_snippet,
+    }
+    return render(request, 'pages/view_snippets.html', context)
+
+
+def snippet_delete(request, snippet_id):
+    snippet = Snippet.objects.get(pk=snippet_id)
+    snippet.delete()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def snippet_edit(request, snippet_id):
+    snippet = Snippet.objects.get(pk=snippet_id)
+
+    context = {
+        'snippet': snippet,
+        'pagename': 'редактирование',
+    }
+    return render(request, 'snippet_edit_detail.html', context)
+
+
+def comment_add(request):
+   if request.method == "POST":
+       comment_form = CommentForm(request.POST)
+       if comment_form.is_valid():
+           snippet_id = request.POST.get("snippet_id")
+           comment = comment_form.save(commit=False)
+           comment.author = request.user
+           comment.snippet = Snippet.objects.get(pk=snippet_id)
+           comment.save()
+           return redirect(request.META.get('HTTP_REFERER', '/'))

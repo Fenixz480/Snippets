@@ -1,5 +1,5 @@
-from django.forms import ModelForm, TextInput
-from MainApp.models import Snippet
+from django.forms import ModelForm, TextInput, Textarea
+from MainApp.models import Snippet, Comment
 from django.contrib.auth.models import User
 from django.forms import CharField, PasswordInput
 from django.core.exceptions import ValidationError
@@ -9,13 +9,12 @@ class SnippetForm(ModelForm):
    class Meta:
        model = Snippet
        # Описываем поля, которые будем заполнять в форме
-       fields = ['name', 'lang', 'code']
+       fields = ['name', 'lang', 'code', 'access']
        widgets = {
            'name': TextInput(attrs={"class": "form-control form-control-lg", 'placeholder': 'Название сниппета'}),
-
        }
        labels = {
-           'name': '', 'lang': '', 'code': '',
+           'name': '', 'lang': '', 'code': '', 'access': '',
        }
 
 
@@ -41,3 +40,15 @@ class UserRegistrationForm(ModelForm):
        if commit:
            user.save()
        return user
+
+
+class CommentForm(ModelForm):
+   class Meta:
+       model = Comment
+       fields = ["text"]
+       labels = {
+           'text': '',
+       }
+       widgets = {
+           'text': Textarea(attrs={'placeholder': 'Комментарий'}),
+       }

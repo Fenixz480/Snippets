@@ -60,16 +60,24 @@
                         <th scope="col">Название</th>
                         <th scope="col">Дата создания</th>
                         <th scope="col">Пользователь</th>
+                        <th scope="col">Доступ</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for snippet in snippets %}
                     <tr>
                         <td scope="row">{{ snippet.id }}</td>
-                        <td><a href="{% url 'snippet-detail' snippet.id %}">{{ snippet.name }}</a></td>
+                        <td><a href="{% url 'snippet-detail' snippet.id %}">
+                            {{ snippet.name }}</a>
+                            <a href="{% url 'snippet-delete' snippet.id %}"><i class="fa-solid fa-trash"></i></a>
+                            <a href="{% url 'snippet-edit' snippet.id %}"><i class="fa-sharp fa-solid fa-pen-to-square"></i></a>
+                        </td>
                         <td>{{ snippet.creation_date }}</td>
                         <td>
                             {{ snippet.user | default:'Нет пользователя' }}
+                        </td>
+                        <td>
+                            {{ snippet.access }}
                         </td>
                     </tr>
                     {% endfor %}
