@@ -15,12 +15,15 @@ ACCESS_CHOICES = (
 
 
 class Snippet(models.Model):
+    class Meta:
+        ordering = ['name', 'lang']
     name = models.CharField(max_length=100)
     lang = models.CharField(max_length=30, choices=LANG_CHOICES)
     code = models.TextField(max_length=5000)
     access = models.CharField(max_length=30, choices=ACCESS_CHOICES, default='public')
     creation_date = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=True, null=True)
+    private = models.BooleanField(default=False)
 
 
 class Comment(models.Model):

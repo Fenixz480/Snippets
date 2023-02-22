@@ -43,7 +43,19 @@
                 <hr>
             </div>
         </div>
-
+        <div class="row">
+            <div class="col">
+                <form action="" method="get">
+                    <select name="lang" id ="">
+                        <option value="js" {% if lang == 'js' %}selected{% endif %}>JavaScript</option>
+                        <option value="python" {% if lang == 'python' %}selected{% endif %}>Python</option>
+                        <option value="cpp" {% if lang == 'cpp' %}selected{% endif %}>C++</option>
+                    </select>
+                    <button type="submit">Ok</button>
+                    <a href="{% url 'snippets-list' %}">Сбросить фильтр</a>
+                </form>
+            </div>
+        </div>
         <div class="row">
             <div class="col">
 
@@ -57,8 +69,13 @@
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Название</th>
+                        <th scope="col">
+                            <a href="?sort=name">Название</a>
+                            <i class="fa-sharp fa-solid fa-caret-up"></i>
+                            <i class="fa-solid fa-caret-down"></i>
+                        </th>
                         <th scope="col">Дата создания</th>
+                        <th scope="col">Language</th>
                         <th scope="col">Пользователь</th>
                         <th scope="col">Доступ</th>
                     </tr>
@@ -73,11 +90,16 @@
                             <a href="{% url 'snippet-edit' snippet.id %}"><i class="fa-sharp fa-solid fa-pen-to-square"></i></a>
                         </td>
                         <td>{{ snippet.creation_date }}</td>
+                        <td>{{ snippet.lang }}</td>
                         <td>
                             {{ snippet.user | default:'Нет пользователя' }}
                         </td>
                         <td>
-                            {{ snippet.access }}
+                            {% if snippet.private %}
+                                <i style="color:#e309d8" class="fa-solid fa-lock"></i>
+                            {% else %}
+                                <i style="color:#25d611"class="fa-sharp fa-solid fa-unlock"></i>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
