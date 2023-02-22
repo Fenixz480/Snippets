@@ -132,5 +132,4 @@ def comment_add(request):
            comment.save()
            return redirect(request.META.get('HTTP_REFERER', '/'))
 
-def snippets(request):
-    pass
+
