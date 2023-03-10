@@ -1,0 +1,12 @@
+[
+  {"model": "MainApp.snippet",
+    "fields":
+    {"name": "fixtures snippets",
+      "lang": "python",
+      "code": ".....",
+      "access": "public",
+      "creation_date": "2023-02-08T14:24:44.443Z",
+      "user": 1,
+      "private": false}
+  }
+  ]
