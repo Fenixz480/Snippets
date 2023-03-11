@@ -4,6 +4,8 @@ from MainApp.models import Snippet, Comment
 from MainApp.forms import SnippetForm, UserRegistrationForm, CommentForm
 from django.contrib import auth
 from django.db.models import Q
+from django.contrib.auth.models import User
+from django.db.models import Count
 
 
 def index_page(request):
@@ -40,9 +42,13 @@ def snippets_page(request):
     if request.GET.get("lang"):
         snippets = snippets.filter(lang=request.GET['lang'])
         context['lang'] = request.GET['lang']
+    if request.GET.get("user_id"):
+        snippets = snippets.filter(user__id=request.GET['user_id'])
     if request.GET.get('sort'):
         snippets = snippets.order_by(request.GET.get('sort'))
     context['snippets'] = snippets
+    users = User.objects.all().annotate(num_snippets=Count('snippets')).filter(num_snippets__gte=1)
+    context['users'] = users
     return render(request, 'pages/view_snippets.html', context)
 
 
@@ -132,4 +138,11 @@ def comment_add(request):
            comment.save()
            return redirect(request.META.get('HTTP_REFERER', '/'))
 
+
+def users_rate(request):
+    users =User.objects.all().annotate(num_snippets=Count('snippets')).annotate(num_comments=Count('snippets__comments'))
+    context = {
+    "users": users,
+    }
+    return render(request, 'pages/users-rate.html', context)
 
